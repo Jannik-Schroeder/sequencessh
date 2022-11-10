@@ -1,0 +1,78 @@
+#!/bin/bash
+
+COMMAND=$2
+CONFIG_DIR=~/.config/lssh
+CONFIG_FILE=$CONFIG_DIR/config
+LIST_FILE=$CONFIG_DIR/$1
+
+# see if the config file exists and create it
+
+if [ -f "$CONFIG_FILE" ]
+then
+    echo "INFO: Config File loaded"
+else
+    echo "ERROR: No config file found in ~/.config/lssh/"
+    echo "INFO: Do you want to create a config file? (y/n)"
+    read VARREPLY
+    
+    if [ $VARREPLY = n ] || [ $VARREPLY = N ]; then
+        echo "INFO: No Config file created, aborting"
+        exit 0
+    elif [ $VARREPLY = Y ] || [ $VARREPLY = y ]; then
+        mkdir -p ~/.config/lssh/ && touch ~/.config/lssh/config && touch ~/.config/lssh/listexample
+        echo "### Example Config" >> ~/.config/lssh/config
+        echo "### Write Down you list names underneath like you can see here(only alphabetic an numeral)" >> ~/.config/lssh/config
+        echo "### After you done this create a file named like the list an write down your server in the format example file named listexample" >> ~/.config/lssh/config
+        echo "- listname1" >> ~/.config/lssh/config
+        echo "- listname2" >> ~/.config/lssh/config
+
+        echo "### write down the list of your server you want to have in this  group" >> ~/.config/lssh/listexample
+        echo "- user@server1" >> ~/.config/lssh/listexample
+        echo "- user@server2" >> ~/.config/lssh/listexample
+
+        echo "INFO: Config file created, please enter your Server list in ~/.config/lssh/config before you use the script"
+        exit 0
+    else
+        echo "ERROR: Please enter a suitable operator"
+        exit 1
+    fi
+fi
+
+# see if the list is set active in the config 
+while read VARLINE
+do
+    VARREGEXLINE="^[-][ ]*($1)"
+    if [[ $VARLINE =~ $VARREGEXLINE ]];
+    then
+       SERVERLIST=$1
+    elif [ $1 = "-h" ] || [ $1 = "--help" ]
+    then
+        echo "lssh [LIST] ["COMMAND"]"
+        exit 0
+    fi
+done < $CONFIG_FILE
+
+# See if the Serverlist exist
+if [ ! -f "$LIST_FILE" ]
+then
+    echo "No Serverlist found in $CONFIG_DIR/ for $1 please create one, aborting"
+    exit 1
+fi
+
+
+IFS=$'\n'       # make newlines the only separator
+set -f          # disable globbing
+for VARLINE in $(cat < "$LIST_FILE")
+do
+    VARREGEXLINE="^[-][ ]*([a-zA-Z0-9_.-]*[@][a-zA-Z0-9_.-]*)"
+    if [[ $VARLINE =~ $VARREGEXLINE ]]
+    then
+        SERVERNAME="${BASH_REMATCH[1]}"
+        RETURN=$(ssh -o StrictHostKeyChecking=no $SERVERNAME $COMMAND)
+        echo "--------------------------------------------------------------"
+        echo "Servername: $SERVERNAME"
+        echo "--------------------"
+        echo "$RETURN"
+        echo " "
+    fi
+done
