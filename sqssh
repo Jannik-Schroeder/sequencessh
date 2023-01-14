@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COMMAND=$2
-CONFIG_DIR=~/.config/lssh
+CONFIG_DIR=~/.config/sqssh
 CONFIG_FILE=$CONFIG_DIR/config
 LIST_FILE=$CONFIG_DIR/$1
 
@@ -11,7 +11,7 @@ if [ -f "$CONFIG_FILE" ]
 then
     echo "INFO: Config File loaded"
 else
-    echo "ERROR: No config file found in ~/.config/lssh/"
+    echo "ERROR: No config file found in ~/.config/sqssh/"
     echo "INFO: Do you want to create a config file? (y/n)"
     read VARREPLY
     
@@ -19,18 +19,18 @@ else
         echo "INFO: No Config file created, aborting"
         exit 0
     elif [ $VARREPLY = Y ] || [ $VARREPLY = y ]; then
-        mkdir -p ~/.config/lssh/ && touch ~/.config/lssh/config && touch ~/.config/lssh/listexample
-        echo "### Example Config" >> ~/.config/lssh/config
-        echo "### Write Down you list names underneath like you can see here(only alphabetic an numeral)" >> ~/.config/lssh/config
-        echo "### After you done this create a file named like the list an write down your server in the format example file named listexample" >> ~/.config/lssh/config
-        echo "- listname1" >> ~/.config/lssh/config
-        echo "- listname2" >> ~/.config/lssh/config
+        mkdir -p ~/.config/sqssh/ && touch ~/.config/sqssh/config && touch ~/.config/sqssh/listexample
+        echo "### Example Config" >> ~/.config/sqssh/config
+        echo "### Write Down you list names underneath like you can see here(only alphabetic an numeral)" >> ~/.config/sqssh/config
+        echo "### After you done this create a file named like the list an write down your server in the format example file named listexample" >> ~/.config/sqssh/config
+        echo "- listname1" >> ~/.config/sqssh/config
+        echo "- listname2" >> ~/.config/sqssh/config
 
-        echo "### write down the list of your server you want to have in this  group" >> ~/.config/lssh/listexample
-        echo "- user@server1" >> ~/.config/lssh/listexample
-        echo "- user@server2" >> ~/.config/lssh/listexample
+        echo "### write down the list of your server you want to have in this  group" >> ~/.config/sqssh/listexample
+        echo "- user@server1" >> ~/.config/sqssh/listexample
+        echo "- user@server2" >> ~/.config/sqssh/listexample
 
-        echo "INFO: Config file created, please enter your Server list in ~/.config/lssh/config before you use the script"
+        echo "INFO: Config file created, please enter your Server list in ~/.config/sqssh/config before you use the script"
         exit 0
     else
         echo "ERROR: Please enter a suitable operator"
@@ -47,7 +47,7 @@ do
        SERVERLIST=$1
     elif [ $1 = "-h" ] || [ $1 = "--help" ]
     then
-        echo "lssh [LIST] ["COMMAND"]"
+        echo "sqssh [LIST] ["COMMAND"]"
         exit 0
     fi
 done < $CONFIG_FILE
